@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch import FloatTensor
 
 
 class AttrProxy(object):
@@ -45,20 +46,7 @@ class MonotonicNetwork(nn.Module):
         self.group_activations.append(active_group)
         return y.t()
 
-class PositiveLinear(nn.Module):
-    def __init__(self, input_features, output_features, bias=True):
-        nn.Module.__init__(self)
-        self.input_features = input_features
-        self.output_features = output_features
 
-        weight = torch.Tensor(output_features, input_features)
-        init_weight = nn.init.xavier_normal_(weight)
-        self.weight = nn.Parameter(init_weight)
-        if bias:
-            self.bias = nn.Parameter(torch.Tensor(output_features))
-            self.bias.data.uniform_(-0.1, 0.1)
-        else:
-            self.register_parameter('bias', None)
-
+class PositiveLinear(nn.Linear):
     def forward(self, input):
         return F.linear(input, self.weight**2, self.bias)
