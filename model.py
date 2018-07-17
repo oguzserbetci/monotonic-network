@@ -28,7 +28,8 @@ class MonotonicNetwork(nn.Module):
 
         self.n_groups = len(groups)
         for i, n_units in enumerate(groups):
-            self.add_module(f'group_{i}', PositiveLinear(n_inputs, n_units, bias=True))
+            pos_lin = PositiveLinear(n_inputs, n_units, bias=True)
+            self.add_module(f'group_{i}', pos_lin)
 
         self.groups = AttrProxy(self, 'group_', self.n_groups)
         self.group_activations = []
