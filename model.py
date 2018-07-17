@@ -34,7 +34,9 @@ class MonotonicNetwork(nn.Module):
         self.group_activations = []
         self.hp_activations = []
 
-    def forward(self, x):
+    def forward(self, *args):
+        x = torch.stack([FloatTensor(arg) for arg in args],1)
+
         us = []
         for g in self.groups:
             us.append(g(x))
